@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <div>
-      <p>give feedback</p>
+      <p><b>give feedback</b></p>
       <Button
         handleClick={increaseGood}
         text='Good'
@@ -26,18 +26,25 @@ const App = () => {
         handleClick={increaseBad}
         text='Bad'
       />
-      <p>statistics</p>
-      <p>good {good} </p>
-      <p>neutral {neutral} </p>
-      <p>bad {bad} </p>
+      <p><b>statistics</b></p>
       <Statistics good={good} neutral={neutral} bad={bad}/>
     </div>
   )
 }
 
 const Statistics = (props) => {
+  if(props.good+props.neutral+props.bad === 0){
+    return(
+      <div>
+        No feedback given
+      </div>
+    )
+  }
   return(
     <div>
+      <p>good {props.good} </p>
+      <p>neutral {props.neutral} </p>
+      <p>bad {props.bad} </p>
       <p>average {(props.good-props.bad)/(props.good+props.neutral+props.bad)} </p>
       <p>positive {(100*props.good)/(props.good+props.neutral+props.bad)} % </p>
     </div>
