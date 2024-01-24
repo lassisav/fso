@@ -42,11 +42,19 @@ const Statistics = (props) => {
   }
   return(
     <div>
-      <p>good {props.good} </p>
-      <p>neutral {props.neutral} </p>
-      <p>bad {props.bad} </p>
-      <p>average {(props.good-props.bad)/(props.good+props.neutral+props.bad)} </p>
-      <p>positive {(100*props.good)/(props.good+props.neutral+props.bad)} % </p>
+      <StatisticsLine pretext="good" value={props.good}/>
+      <StatisticsLine pretext="neutral" value={props.neutral}/>
+      <StatisticsLine pretext="bad" value={props.bad}/>
+      <StatisticsLine pretext="average" value={(props.good-props.bad)/(props.good+props.neutral+props.bad)}/>
+      <StatisticsLine pretext="positive" value={(100*props.good)/(props.good+props.neutral+props.bad)} posttext=" %"/>
+    </div>
+  )
+}
+
+const StatisticsLine = (props) => {
+  return(
+    <div>
+      <p>{props.pretext} {props.value} {props.posttext}</p>
     </div>
   )
 }
