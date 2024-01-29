@@ -19,9 +19,11 @@ const App = () => {
 
   const selectRandom = () => setSelected(Math.floor(Math.random() * 8))
   const updateVotes = () => setVotes(handleVote(selected, votes))
-  
+  const selectHighest = () => mostVotes(votes)
+
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <Button
@@ -31,6 +33,11 @@ const App = () => {
       <Button
         handleClick={updateVotes}
         text='vote'
+      />
+      <Most
+        index={mostVotes(votes)}
+        anecdotes={anecdotes}
+        votes={votes}
       />
     </div>
   )
@@ -42,12 +49,43 @@ function handleVote(selected, votes) {
   return(copyVotes)
 }
 
+const Most = (props) => {
+  if(props.index != -1){
+    return(
+      <div>
+        <h2>Anecdote with most votes</h2>
+        <p>{props.anecdotes[props.index]}</p>
+        <p>has {props.votes[props.index]} votes</p>
+      </div>
+    )
+  }
+  return(<div></div>)
+}
+
 const Button = (props) => {
   return (
     <button onClick={props.handleClick}>
       {props.text}
     </button>
   )
+}
+
+function mostVotes(votes){
+  let maxIndex = 0;
+  let maxValue = votes[0];
+  
+  for (let i = 0; i < 8; i++) {
+    if (votes[i] > maxValue) {
+      maxValue = votes[i];
+      maxIndex = i;
+    }
+  }
+
+  if(maxValue == 0) {
+    return -1
+  }
+  
+  return maxIndex
 }
 
 export default App
