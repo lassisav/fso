@@ -1,3 +1,5 @@
+import Course from './components/Course'
+
 const App = () => {
   const courses = [
     {
@@ -63,46 +65,4 @@ const Courses = (props) => {
 )
 }
 
-const Course = (props) => {
-  return (
-    <li>
-      <Header course={props.course.name} />
-      <Content parts={props.course.parts} />
-      <Total parts={props.course.parts}/>
-    </li>
-  )
-}
-
-const Header = (props) => {
-  return (
-    <>
-      <h3>{props.course}</h3>
-    </>
-  )
-}
-
-const Content = (props) => {
-  return(props.parts.map(temp =>
-    <li key={temp.id}>
-      <Part part={temp} />
-    </li>
-    )
-  )
-}
-
-const Part = (props) => {
-  return(
-    <>
-      <p>{props.part.name} {props.part.exercises}</p>
-    </>
-  )
-}
-
-const Total = (props) => {
-  let result = props.parts.map(temp => temp.exercises)
-  return(
-    <p><b>total of {result.reduce((a, b) => a + b, 0)} exercises</b></p>
-  )
-
-}
 export default App
