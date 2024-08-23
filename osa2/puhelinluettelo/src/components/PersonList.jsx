@@ -3,20 +3,13 @@ export function personList (personList, search){
     const listElements = [];
 
     let i = 0;
-    while (i < personList.length) {
-      const currentName = personList[i].name;
-      const currentNumber = personList[i].number;
-      const casedName = currentName.toLowerCase();
 
-    if (casedName.includes(casedSearch)) {
-      listElements.push(
-        <span key={i}>
-          {currentName} {currentNumber}
-        </span>
-      );
-      listElements.push(<br key={`br-${i}`} />);
+    if(!Array.isArray(personList)){
+      console.log('Eipä ollu')
+      return []
     }
-    i = i + 1;
-  }
-  return listElements
+    console.log(personList)
+    return personList.filter(person =>
+      person.name.toLowerCase().includes(casedSearch)
+    )
 }

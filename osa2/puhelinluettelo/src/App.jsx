@@ -3,6 +3,7 @@ import { personList } from './components/PersonList'
 import personService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm';
+import { removePerson } from './components/RemovePerson';
 
 const App = () => {
   const [persons, setPersons] = useState('')
@@ -33,7 +34,6 @@ const App = () => {
       personService      
         .create(personObject)      
         .then(response => {      
-          console.log(response)
           const tempPerson = persons.concat(response)
           setPersons(tempPerson)        
           setNewName('')
@@ -43,6 +43,16 @@ const App = () => {
         })
     }
     console.log('button clicked', event.target)
+  }
+
+  const handlePersonRemoval = (id, name) => {
+    removePerson(id, name)
+    personService
+      .getAll()
+      .then(response => {
+        setPersons(response)
+        setNewPersonList(personList(response, ''))
+      })
   }
 
   const handleNameChange = (event) => {
@@ -61,6 +71,19 @@ const App = () => {
     setNewPersonList(personList(persons, event.target.value))
   }
 
+  const displayPersonList = (personList) => {
+    return(
+      <ul>
+        {personList.map((person, index) => (
+          <li key={index}>
+            {person.name} {person.number}
+            <button onClick={() => handlePersonRemoval(person.id, person.name)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -75,7 +98,7 @@ const App = () => {
       />
       <h2>Numbers</h2>
       <ul>
-        {newPersonList}
+        {displayPersonList(newPersonList)}
       </ul>
     </div>
   )
