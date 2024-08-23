@@ -21,28 +21,47 @@ const App = () => {
       })
   }, [])
 
-  const addContact = (event) => {
+  const addContact = async (event) => {
     event.preventDefault()
     if(persons.some(person  =>  person.name === newName)){
-      window.alert(`${newName} is already added to phonebook`)
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        oldContactNewNumber()
+      }
     } else {
       const personObject = {
         name: newName,
         number: newNumber
       }
 
-      personService      
-        .create(personObject)      
-        .then(response => {      
-          const tempPerson = persons.concat(response)
-          setPersons(tempPerson)        
-          setNewName('')
-          setNewNumber('')
-          setNewPersonList(personList(tempPerson, ''))
-          setNewFilter('')
-        })
+      await personService      
+        .create(personObject)
+      displayRefresh()
     }
     console.log('button clicked', event.target)
+  }
+
+  const oldContactNewNumber = async () => {
+    const personToChange = persons.find(person => person.name === newName)
+    const idToChange = personToChange.id
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
+    await personService
+      .update(idToChange, newPerson)
+    displayRefresh()
+  }
+
+  const displayRefresh = () => {
+    personService
+      .getAll()
+      .then(response => {
+        setPersons(response)        
+        setNewName('')
+        setNewNumber('')
+        setNewPersonList(personList(response, ''))
+        setNewFilter('')
+      })
   }
 
   const handlePersonRemoval = (id, name) => {
