@@ -4,9 +4,6 @@ export function removePerson(id, name){
         try{
             personService
                 .remove(id)
-                .then(response => {
-                    console.log(`${name} removed successfully`)
-                })
         } catch(error) {
             console.error("Error: ", error)
         }

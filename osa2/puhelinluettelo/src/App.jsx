@@ -3,6 +3,7 @@ import { personList } from './components/PersonList'
 import personService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm';
+import Notification from './components/Notification'
 import { removePerson } from './components/RemovePerson';
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [newPersonList, setNewPersonList] = useState(personList(persons, ''))
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -36,7 +38,15 @@ const App = () => {
       await personService      
         .create(personObject)
       displayRefresh()
+
+      setErrorMessage(
+        `${personObject.name} added successfully`        
+      )        
+      setTimeout(() => {          
+        setErrorMessage(null)        
+      }, 10000)
     }
+
     console.log('button clicked', event.target)
   }
 
@@ -50,6 +60,14 @@ const App = () => {
     await personService
       .update(idToChange, newPerson)
     displayRefresh()
+
+    setErrorMessage(
+      `${newPerson.name} updated successfully`        
+    )        
+    setTimeout(() => {          
+      setErrorMessage(null)        
+    }, 10000)
+
   }
 
   const displayRefresh = () => {
@@ -66,6 +84,14 @@ const App = () => {
 
   const handlePersonRemoval = (id, name) => {
     removePerson(id, name)
+
+    setErrorMessage(
+      `${personObject.name} removed successfully`        
+    )        
+    setTimeout(() => {          
+      setErrorMessage(null)        
+    }, 10000)
+
     personService
       .getAll()
       .then(response => {
@@ -106,6 +132,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter value={newFilter} onChange={handleFilterChange} />
       <h2>Add new</h2>
       <PersonForm
