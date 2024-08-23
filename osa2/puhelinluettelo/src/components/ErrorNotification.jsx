@@ -1,14 +1,14 @@
 import '../index.css'
-const Notification = ({ message }) => {
+const ErrorNotification = ({ message }) => {
     if (message === null) {
       return null
     }
   
     return (
-      <div className="notif">
+      <div className="errornotif">
         {message}
       </div>
     )
 }
 
-export default Notification
+export default ErrorNotification

@@ -4,6 +4,8 @@ import personService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm';
 import Notification from './components/Notification'
+import ErrorNotification from './components/ErrorNotification';
+import './index.css'
 import { removePerson } from './components/RemovePerson';
 
 const App = () => {
@@ -12,6 +14,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [newPersonList, setNewPersonList] = useState(personList(persons, ''))
+  const [notificationMessage, setNotificationMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
@@ -39,11 +42,11 @@ const App = () => {
         .create(personObject)
       displayRefresh()
 
-      setErrorMessage(
+      setNotificationMessage(
         `${personObject.name} added successfully`        
       )        
       setTimeout(() => {          
-        setErrorMessage(null)        
+        setNotificationMessage(null)        
       }, 10000)
     }
 
@@ -57,15 +60,30 @@ const App = () => {
       name: newName,
       number: newNumber
     }
+    var failure = false
     await personService
       .update(idToChange, newPerson)
-    displayRefresh()
+      .catch((error) => {
+        failure = true
+        setErrorMessage(
+          `${newPerson.name} has already been removed from the phonebook`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
+        ;
+        console.log(errorMessage)
+      });
+    displayRefresh();
 
-    setErrorMessage(
-      `${newPerson.name} updated successfully`        
-    )        
+    if(!failure){
+      setNotificationMessage(
+        `${newPerson.name} updated successfully`        
+      )   
+    }
+         
     setTimeout(() => {          
-      setErrorMessage(null)        
+      setNotificationMessage(null)        
     }, 10000)
 
   }
@@ -82,22 +100,25 @@ const App = () => {
       })
   }
 
-  const handlePersonRemoval = (id, name) => {
-    removePerson(id, name)
-
-    setErrorMessage(
-      `${personObject.name} removed successfully`        
+  const handlePersonRemoval = async (id, name) => {
+    if(window.confirm(`Delete ${name}?`)){
+      try{
+          await personService
+              .remove(id)
+      } catch(error) {
+          console.error("Error: ", error)
+      }
+    }
+    displayRefresh()
+    
+    setNotificationMessage(
+      `${name} removed successfully`        
     )        
     setTimeout(() => {          
-      setErrorMessage(null)        
+      setNotificationMessage(null)        
     }, 10000)
 
-    personService
-      .getAll()
-      .then(response => {
-        setPersons(response)
-        setNewPersonList(personList(response, ''))
-      })
+  
   }
 
   const handleNameChange = (event) => {
@@ -132,7 +153,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={notificationMessage} />
+      <ErrorNotification message={errorMessage} />
       <Filter value={newFilter} onChange={handleFilterChange} />
       <h2>Add new</h2>
       <PersonForm
