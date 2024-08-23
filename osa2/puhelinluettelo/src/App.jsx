@@ -29,11 +29,16 @@ const App = () => {
         name: newName,
         number: newNumber
       }
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
-      setNewPersonList(personList(persons, ''))
-      setNewFilter('')
+
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+          setNewPersonList(personList(persons, ''))
+          setNewFilter('')
+        })
       console.log('button clicked', event.target)}
   }
 
