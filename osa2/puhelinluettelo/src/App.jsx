@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { personList } from './components/PersonList'
 import axios from 'axios'
+import personService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm';
 
@@ -12,11 +13,12 @@ const App = () => {
   const [newPersonList, setNewPersonList] = useState(personList(persons, ''))
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => {
-        setPersons(response.data)
-        setNewPersonList(personList(response.data, ''))
+        console.log(response)
+        setPersons(response)
+        setNewPersonList(personList(response, ''))
       })
   }, [])
 
