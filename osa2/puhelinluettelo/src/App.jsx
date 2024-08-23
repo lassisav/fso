@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { personList } from './components/PersonList'
-import axios from 'axios'
 import personService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm';
@@ -16,7 +15,6 @@ const App = () => {
     personService
       .getAll()
       .then(response => {
-        console.log(response)
         setPersons(response)
         setNewPersonList(personList(response, ''))
       })
@@ -32,16 +30,19 @@ const App = () => {
         number: newNumber
       }
 
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService      
+        .create(personObject)      
+        .then(response => {      
+          console.log(response)
+          const tempPerson = persons.concat(response)
+          setPersons(tempPerson)        
           setNewName('')
           setNewNumber('')
-          setNewPersonList(personList(persons, ''))
+          setNewPersonList(personList(tempPerson, ''))
           setNewFilter('')
         })
-      console.log('button clicked', event.target)}
+    }
+    console.log('button clicked', event.target)
   }
 
   const handleNameChange = (event) => {
